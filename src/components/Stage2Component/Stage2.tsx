@@ -1,0 +1,140 @@
+import { useState } from "react";
+import "./Stage2.css";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"
+
+const Stage2 = () => {
+  const [track, setTrack] = useState("");
+  const [sector, setSector] = useState("");
+  const [otherSector, setOtherSector] = useState("");
+  const [loading,setLoading] = useState(false)
+  const [dis,setDis] = useState(false)
+  const navigate = useNavigate()
+
+  const handleSumbit = async() => {
+    
+    if (!track) {
+      toast.error("Please select a track.");
+      return;
+    }
+
+    if (!sector) {
+      toast.error("Please select a sector.");
+      return;
+    }
+
+    if (sector === "Other" && !otherSector.trim()) {
+      toast.error("Please enter your sector.");
+      return;
+    }
+
+
+
+
+    const stage1 = JSON.parse(localStorage.getItem("stage1") || "{}")
+
+    const stage2 = {
+      track,
+      sector: sector === "Other" ? otherSector : sector,
+    };
+
+    const application = {
+      ...stage1,
+      ...stage2
+    }
+
+    setLoading(true)
+    setDis(true)
+
+    const res = await fetch("http://localhost:7000/application",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify(application)
+    })
+
+    const data = await res.json()
+
+    if(!res.ok){
+      toast.error(data.message || "Server error !")
+      return
+    }
+
+    
+
+    toast.success("Success")
+    navigate("/submit")
+  }
+
+  return (
+    <div className="stage2-container">
+
+      <h2 className="stage-title">Startup Details</h2>
+
+      <div className="stage2-group">
+        <label className="stage2-label">Track (Board)</label>
+
+        <select
+          className="stage2-select"
+          value={track}
+          onChange={(e) => setTrack(e.target.value)}
+        >
+          <option value="">Select Track</option>
+          <option value="Technology & Innovation">Technology & Innovation</option>
+          <option value="Sustainability & CleanTech">Sustainability & CleanTech</option>
+          <option value="Social Impact">Social Impact</option>
+          <option value="FinTech">FinTech</option>
+          <option value="HealthTech">HealthTech</option>
+          <option value="EdTech">EdTech</option>
+          <option value="Consumer & D2C">Consumer & D2C</option>
+          <option value="AgriTech">AgriTech</option>
+          <option value="Open Innovation">Open Innovation</option>
+        </select>
+      </div>
+
+      <div className="stage2-group">
+        <label className="stage2-label">Sector</label>
+
+        <select
+          className="stage2-select"
+          value={sector}
+          onChange={(e) => setSector(e.target.value)}
+        >
+          <option value="">Select Sector</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="Education">Education</option>
+          <option value="Agriculture">Agriculture</option>
+          <option value="E-commerce / Retail">E-commerce / Retail</option>
+          <option value="Finance & Banking">Finance & Banking</option>
+          <option value="Climate & Environment">Climate & Environment</option>
+          <option value="Artificial Intelligence / Deep Tech">Artificial Intelligence / Deep Tech</option>
+          <option value="Manufacturing">Manufacturing</option>
+          <option value="Transportation & Logistics">Transportation & Logistics</option>
+          <option value="Media & Entertainment">Media & Entertainment</option>
+          <option value="Food & Beverage">Food & Beverage</option>
+          <option value="Travel & Hospitality">Travel & Hospitality</option>
+          <option value="Other">Other</option>
+        </select>
+
+        {sector === "Other" && (
+          <input
+            className="stage2-input"
+            type="text"
+            placeholder="Enter your sector"
+            value={otherSector}
+            onChange={(e) => setOtherSector(e.target.value)}
+          />
+        )}
+      </div>
+
+      <div className="stage2-buttons">
+        <button className="back-btn" onClick={() => navigate("/")}>Back</button>
+        <button  disabled={dis} className="next-btn" onClick={handleSumbit}>{loading ? "Waiting for progress" : "Submit"}</button>
+      </div>
+
+    </div>
+  );
+};
+
+export default Stage2;
