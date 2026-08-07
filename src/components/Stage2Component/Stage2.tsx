@@ -3,7 +3,7 @@ import "./Stage2.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const apiBaseUrl = (import.meta.env.VITE_API_URL || "https://startup-backend-6pdo.onrender.com/").replace(/\/$/, "");
+const apiBaseUrl = ("https://startup-backend-6pdo.onrender.com/").replace(/\/$/, "");
 
 const Stage2 = () => {
   const [track, setTrack] = useState("");
