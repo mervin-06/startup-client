@@ -1,46 +1,48 @@
 import { useState } from "react";
 import "./Stage1.css";
-import { useNavigate, } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function Stage1() {
-
-  const navigate = useNavigate()
-  const [idea, setIdea] = useState("")
-  const [leader, setLeader] = useState("")
-  const [Email, setEmail] = useState("")
-  const [ph, setPh] = useState("")
-  const [department, setDepartment] = useState("")
-  const [otherDepartment, setOtherDepartment] = useState("")
-  const [input, setInput] = useState<string[]>([])
+  const navigate = useNavigate();
+  const [idea, setIdea] = useState("");
+  const [leader, setLeader] = useState("");
+  const [Email, setEmail] = useState("");
+  const [ph, setPh] = useState("");
+  const [department, setDepartment] = useState("");
+  const [input, setInput] = useState<string[]>([]);
 
   const handleNext = () => {
-    const selectedDepartment = department === "OTHER" ? otherDepartment.trim() : department.trim()
+    const trimmedIdea = idea.trim();
+    const trimmedLeader = leader.trim();
+    const trimmedEmail = Email.trim();
+    const trimmedPhone = ph.trim();
+    const trimmedDepartment = department.trim();
+    const trimmedMembers = input.map((member) => member.trim()).filter(Boolean);
 
-    if (!idea.trim() || !leader.trim() || !Email.trim() || !ph.trim() || !selectedDepartment || input.some((member) => !member.trim())) {
-      toast.error("All fields are required")
-      return
+    if (!trimmedIdea || !trimmedLeader || !trimmedEmail || !trimmedPhone || !trimmedDepartment || trimmedMembers.length === 0) {
+      toast.error("All fields are required");
+      return;
     }
 
     const Stage1data = {
-      idea: idea.trim(),
-      leader: leader.trim(),
-      email: Email.trim(),
-      phone: ph.trim(),
-      department: selectedDepartment,
-      teams: input.map((member) => member.trim())
-    }
+      idea: trimmedIdea,
+      leader: trimmedLeader,
+      email: trimmedEmail,
+      phone: trimmedPhone,
+      department: trimmedDepartment,
+      teams: trimmedMembers,
+    };
 
-    localStorage.setItem("stage1", JSON.stringify(Stage1data))
-
-    navigate('/stage2')
-  }
+    localStorage.setItem("stage1", JSON.stringify(Stage1data));
+    navigate("/stage2");
+  };
 
   const handleInputValue = (val: string, index: number) => {
-    const newInput = [...input]
+    const newInput = [...input];
     newInput[index] = val;
-    setInput(newInput)
-  }
+    setInput(newInput);
+  };
 
   return (
     <div className="stage1-form">
@@ -72,10 +74,7 @@ export default function Stage1() {
         <label htmlFor="department">Department</label>
         <select
           value={department}
-          onChange={(e) => {
-            setDepartment(e.target.value)
-            setOtherDepartment("")
-          }}
+          onChange={(e) => setDepartment(e.target.value)}
         >
           <option value="">Select Department</option>
           <option value="CSE">CSE</option>
@@ -93,8 +92,7 @@ export default function Stage1() {
           <input
             type="text"
             placeholder="Enter your department"
-            value={otherDepartment}
-            onChange={(e) => setOtherDepartment(e.target.value)}
+            onChange={(e) => setDepartment(e.target.value)}
           />
         )}
         <div>

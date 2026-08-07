@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Stage2.css";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
 
 const apiBaseUrl = (import.meta.env.VITE_API_URL || "https://startup-server-03qo.onrender.com").replace(/\/$/, "");
 
@@ -12,6 +12,14 @@ const Stage2 = () => {
   const [loading, setLoading] = useState(false)
   const [dis, setDis] = useState(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const savedStage1 = localStorage.getItem("stage1");
+    if (!savedStage1) {
+      toast.error("Please complete Stage 1 before submitting.");
+      navigate("/");
+    }
+  }, [navigate]);
 
   const handleSumbit = async () => {
     if (!track) {
