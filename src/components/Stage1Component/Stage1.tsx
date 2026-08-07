@@ -11,10 +11,13 @@ export default function Stage1() {
   const [Email, setEmail] = useState("")
   const [ph, setPh] = useState("")
   const [department, setDepartment] = useState("")
+  const [otherDepartment, setOtherDepartment] = useState("")
   const [input, setInput] = useState<string[]>([])
 
   const handleNext = () => {
-    if (!idea.trim() || !leader.trim() || !Email.trim() || !ph.trim() || !department.trim() || input.length === 0 || input.some((member) => !member.trim())) {
+    const selectedDepartment = department === "OTHER" ? otherDepartment.trim() : department.trim()
+
+    if (!idea.trim() || !leader.trim() || !Email.trim() || !ph.trim() || !selectedDepartment || input.some((member) => !member.trim())) {
       toast.error("All fields are required")
       return
     }
@@ -24,7 +27,7 @@ export default function Stage1() {
       leader: leader.trim(),
       email: Email.trim(),
       phone: ph.trim(),
-      department: department.trim(),
+      department: selectedDepartment,
       teams: input.map((member) => member.trim())
     }
 
@@ -69,7 +72,10 @@ export default function Stage1() {
         <label htmlFor="department">Department</label>
         <select
           value={department}
-          onChange={(e) => setDepartment(e.target.value)}
+          onChange={(e) => {
+            setDepartment(e.target.value)
+            setOtherDepartment("")
+          }}
         >
           <option value="">Select Department</option>
           <option value="CSE">CSE</option>
@@ -87,7 +93,8 @@ export default function Stage1() {
           <input
             type="text"
             placeholder="Enter your department"
-            onChange={(e) => setDepartment(e.target.value)}
+            value={otherDepartment}
+            onChange={(e) => setOtherDepartment(e.target.value)}
           />
         )}
         <div>
