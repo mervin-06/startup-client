@@ -16,7 +16,7 @@ const Stage2 = () => {
   useEffect(() => {
     const savedStage1 = localStorage.getItem("stage1");
     if (!savedStage1) {
-      toast.error("Please complete Stage 1 before submitting.");
+      // toast.error("Please complete Stage 1 before submitting.");
       navigate("/");
     }
   }, [navigate]);
@@ -85,6 +85,7 @@ const Stage2 = () => {
       }
 
       toast.success("Application submitted successfully!");
+      navigate("/submit");
 
       localStorage.removeItem("stage1");
 
