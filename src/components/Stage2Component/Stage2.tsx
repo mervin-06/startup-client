@@ -46,7 +46,7 @@ const Stage2 = () => {
     setLoading(true)
     setDis(true)
 
-    const res = await fetch("http://localhost:7000/application",{
+    const res = await fetch("https://startup-server-03qo.onrender.com/application",{
       method:"POST",
       headers:{
         "Content-Type":"application/json"
