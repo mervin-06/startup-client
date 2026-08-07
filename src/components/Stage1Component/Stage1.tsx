@@ -14,21 +14,19 @@ export default function Stage1() {
   const [input, setInput] = useState<string[]>([])
 
   const handleNext = () => {
-    if (!idea || !leader || !Email || !ph || !department || input.length === 0) {
+    if (!idea.trim() || !leader.trim() || !Email.trim() || !ph.trim() || !department.trim() || input.length === 0 || input.some((member) => !member.trim())) {
       toast.error("All fields are required")
       return
     }
 
     const Stage1data = {
-      idea: idea,
-      leader: leader,
-      email: Email,
-      phone: ph,
-      department: department,
-      teams: input
+      idea: idea.trim(),
+      leader: leader.trim(),
+      email: Email.trim(),
+      phone: ph.trim(),
+      department: department.trim(),
+      teams: input.map((member) => member.trim())
     }
-
-    console.log(Stage1data)
 
     localStorage.setItem("stage1", JSON.stringify(Stage1data))
 
@@ -41,8 +39,6 @@ export default function Stage1() {
     setInput(newInput)
   }
 
-  localStorage.setItem("email", Email)
-  console.log(input)
   return (
     <div className="stage1-form">
       <div className="page-title">
