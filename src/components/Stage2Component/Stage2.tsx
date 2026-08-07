@@ -3,6 +3,8 @@ import "./Stage2.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify"
 
+const apiBaseUrl = (import.meta.env.VITE_API_URL || "https://startup-server-03qo.onrender.com").replace(/\/$/, "");
+
 const Stage2 = () => {
   const [track, setTrack] = useState("");
   const [sector, setSector] = useState("");
@@ -27,9 +29,20 @@ const Stage2 = () => {
       return;
     }
 
-    const stage1 = JSON.parse(
-      localStorage.getItem("stage1") || "{}"
-    );
+    let stage1: Record<string, unknown>;
+    try {
+      stage1 = JSON.parse(localStorage.getItem("stage1") || "{}");
+    } catch {
+      toast.error("Your form session is invalid. Please fill Stage 1 again.");
+      navigate("/");
+      return;
+    }
+
+    if (!stage1.idea || !stage1.leader || !stage1.email || !stage1.phone || !stage1.department || !Array.isArray(stage1.teams) || stage1.teams.length === 0) {
+      toast.error("Please complete Stage 1 before submitting.");
+      navigate("/");
+      return;
+    }
 
     const stage2 = {
       track,
@@ -46,7 +59,7 @@ const Stage2 = () => {
 
     try {
       const res = await fetch(
-        "https://startup-server-03qo.onrender.com/application",
+        `${apiBaseUrl}/application`,
         {
           method: "POST",
           headers: {
@@ -56,7 +69,7 @@ const Stage2 = () => {
         }
       );
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
         toast.error(data.message || "Server error!");
