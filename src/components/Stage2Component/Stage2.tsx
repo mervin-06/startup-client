@@ -7,12 +7,11 @@ const Stage2 = () => {
   const [track, setTrack] = useState("");
   const [sector, setSector] = useState("");
   const [otherSector, setOtherSector] = useState("");
-  const [loading,setLoading] = useState(false)
-  const [dis,setDis] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [dis, setDis] = useState(false)
   const navigate = useNavigate()
 
-  const handleSumbit = async() => {
-    
+  const handleSumbit = async () => {
     if (!track) {
       toast.error("Please select a track.");
       return;
@@ -28,10 +27,9 @@ const Stage2 = () => {
       return;
     }
 
-
-
-
-    const stage1 = JSON.parse(localStorage.getItem("stage1") || "{}")
+    const stage1 = JSON.parse(
+      localStorage.getItem("stage1") || "{}"
+    );
 
     const stage2 = {
       track,
@@ -40,32 +38,49 @@ const Stage2 = () => {
 
     const application = {
       ...stage1,
-      ...stage2
+      ...stage2,
+    };
+
+    setLoading(true);
+    setDis(true);
+
+    try {
+      const res = await fetch(
+        "https://startup-server-03qo.onrender.com/application",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(application),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || "Server error!");
+        return;
+      }
+
+      toast.success("Application submitted successfully!");
+
+      localStorage.removeItem("stage1");
+
+      navigate("/submit");
+
+    } catch (error) {
+      console.error("SUBMIT ERROR:", error);
+
+      toast.error(
+        "Unable to connect to server. Please try again."
+      );
+
+    } finally {
+      setLoading(false);
+      setDis(false);
     }
-
-    setLoading(true)
-    setDis(true)
-
-    const res = await fetch("https://startup-server-03qo.onrender.com/application",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body:JSON.stringify(application)
-    })
-
-    const data = await res.json()
-
-    if(!res.ok){
-      toast.error(data.message || "Server error !")
-      return
-    }
-
-    
-
-    toast.success("Success")
-    navigate("/submit")
-  }
+  };
 
   return (
     <div className="stage2-container">
@@ -130,7 +145,7 @@ const Stage2 = () => {
 
       <div className="stage2-buttons">
         <button className="back-btn" onClick={() => navigate("/")}>Back</button>
-        <button  disabled={dis} className="next-btn" onClick={handleSumbit}>{loading ? "Waiting for progress" : "Submit"}</button>
+        <button disabled={dis} className="next-btn" onClick={handleSumbit}>{loading ? "Waiting for progress" : "Submit"}</button>
       </div>
 
     </div>
