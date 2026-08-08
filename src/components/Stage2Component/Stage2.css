@@ -71,6 +71,18 @@
     margin-top: 15px;
 }
 
+.stage2-textarea {
+    min-height: 160px;
+    resize: vertical;
+}
+
+.word-count {
+    align-self: flex-end;
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 13px;
+}
+
 .stage2-buttons {
     display: flex;
     justify-content: space-between;

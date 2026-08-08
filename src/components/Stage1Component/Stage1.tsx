@@ -10,7 +10,7 @@ export default function Stage1() {
   const [Email, setEmail] = useState("");
   const [ph, setPh] = useState("");
   const [department, setDepartment] = useState("");
-  const [input, setInput] = useState<string[]>([]);
+  const [members, setMembers] = useState<string[]>(["", "", ""]);
 
   const handleNext = () => {
     const trimmedIdea = idea.trim();
@@ -18,9 +18,9 @@ export default function Stage1() {
     const trimmedEmail = Email.trim();
     const trimmedPhone = ph.trim();
     const trimmedDepartment = department.trim();
-    const trimmedMembers = input.map((member) => member.trim()).filter(Boolean);
+    const trimmedMembers = members.map((member) => member.trim());
 
-    if (!trimmedIdea || !trimmedLeader || !trimmedEmail || !trimmedPhone || !trimmedDepartment || trimmedMembers.length === 0) {
+    if (!trimmedIdea || !trimmedLeader || !trimmedEmail || !trimmedPhone || !trimmedDepartment || trimmedMembers.some((member) => !member)) {
       toast.error("All fields are required");
       return;
     }
@@ -39,9 +39,9 @@ export default function Stage1() {
   };
 
   const handleInputValue = (val: string, index: number) => {
-    const newInput = [...input];
+    const newInput = [...members];
     newInput[index] = val;
-    setInput(newInput);
+    setMembers(newInput);
   };
 
   return (
@@ -95,14 +95,16 @@ export default function Stage1() {
             onChange={(e) => setDepartment(e.target.value)}
           />
         )}
-        <div>
-          <label htmlFor="">Other team Member's name</label>
-          <button type="button" onClick={() => setInput(prev => [...prev, ""])}>+Add Member's</button>
-          <br />
-          {input.map((input, index) => (
-            <div key={index}>
-              <input type="text" onChange={(e) => { handleInputValue(e.target.value, index) }} value={input} placeholder={`member ${index + 1}`} />
-            </div>
+        <div className="team-members">
+          <label>Other team members' names</label>
+          {members.map((member, index) => (
+            <input
+              key={index}
+              type="text"
+              onChange={(e) => handleInputValue(e.target.value, index)}
+              value={member}
+              placeholder={`Member ${index + 1}`}
+            />
           ))}
         </div>
       </div>

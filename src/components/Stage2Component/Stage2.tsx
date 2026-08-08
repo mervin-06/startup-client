@@ -9,6 +9,10 @@ const Stage2 = () => {
   const [track, setTrack] = useState("");
   const [sector, setSector] = useState("");
   const [otherSector, setOtherSector] = useState("");
+  const [description, setDescription] = useState("");
+  const [inputOne, setInputOne] = useState("");
+  const [inputTwo, setInputTwo] = useState("");
+  const [inputThree, setInputThree] = useState("");
   const [loading, setLoading] = useState(false)
   const [dis, setDis] = useState(false)
   const navigate = useNavigate()
@@ -22,6 +26,8 @@ const Stage2 = () => {
   }, [navigate]);
 
   const handleSumbit = async () => {
+    const descriptionWordCount = description.trim().split(/\s+/).filter(Boolean).length;
+
     if (!track) {
       toast.error("Please select a track.");
       return;
@@ -34,6 +40,21 @@ const Stage2 = () => {
 
     if (sector === "Other" && !otherSector.trim()) {
       toast.error("Please enter your sector.");
+      return;
+    }
+
+    if (descriptionWordCount === 0) {
+      toast.error("Please enter a startup description.");
+      return;
+    }
+
+    if (descriptionWordCount > 150) {
+      toast.error("Keep the startup description to 150 words or fewer.");
+      return;
+    }
+
+    if (!inputOne.trim() || !inputTwo.trim() || !inputThree.trim()) {
+      toast.error("Please fill all three additional input boxes.");
       return;
     }
 
@@ -55,6 +76,10 @@ const Stage2 = () => {
     const stage2 = {
       track,
       sector: sector === "Other" ? otherSector : sector,
+      description: description.trim(),
+      inputOne: inputOne.trim(),
+      inputTwo: inputTwo.trim(),
+      inputThree: inputThree.trim(),
     };
 
     const application = {
@@ -163,6 +188,55 @@ const Stage2 = () => {
             onChange={(e) => setOtherSector(e.target.value)}
           />
         )}
+      </div>
+
+      <div className="stage2-group">
+        <label className="stage2-label" htmlFor="description">Startup description (up to 150 words)</label>
+        <textarea
+          id="description"
+          className="stage2-input stage2-textarea"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Describe your startup idea, the problem it solves, and its impact."
+          rows={7}
+        />
+        <span className="word-count">{description.trim().split(/\s+/).filter(Boolean).length} / 150 words</span>
+      </div>
+
+      <div className="stage2-group">
+        <label className="stage2-label" htmlFor="inputOne">Additional detail 1</label>
+        <input
+          id="inputOne"
+          className="stage2-input"
+          type="text"
+          value={inputOne}
+          onChange={(e) => setInputOne(e.target.value)}
+          placeholder="Enter your first extra detail"
+        />
+      </div>
+
+      <div className="stage2-group">
+        <label className="stage2-label" htmlFor="inputTwo">Additional detail 2</label>
+        <input
+          id="inputTwo"
+          className="stage2-input"
+          type="text"
+          value={inputTwo}
+          onChange={(e) => setInputTwo(e.target.value)}
+          placeholder="Enter your second extra detail"
+        />
+      </div>
+
+      <div className="stage2-group">
+        <label className="stage2-label" htmlFor="inputThree">Additional detail 3</label>
+        <input
+          id="inputThree"
+          className="stage2-input"
+          type="text"
+          value={inputThree}
+          onChange={(e) => setInputThree(e.target.value)}
+          placeholder="Enter your third extra detail"
+        />
       </div>
 
       <div className="stage2-buttons">

@@ -85,55 +85,21 @@
 }
 
 /* Team member section */
-.stage1-form .form-group > div {
+.stage1-form .team-members {
   margin-top: 16px;
 }
 
-.stage1-form .form-group > div > label {
-  display: inline-block;
-  margin-right: 16px;
-  margin-bottom: 0;
+.stage1-form .team-members > label {
+  display: block;
+  margin-bottom: 8px;
   font-weight: 500;
   font-size: 14px;
   color: #1a202c;
 }
 
-.stage1-form .form-group > div > button {
-  padding: 8px 20px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #ffffff;
-  background: #6366f1;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  letter-spacing: 0.3px;
-}
-
-.stage1-form .form-group > div > button:hover {
-  background: #4f46e5;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-}
-
-.stage1-form .form-group > div > button:active {
-  transform: translateY(0);
-  box-shadow: none;
-}
-
-.stage1-form .form-group > div > br {
-  display: none;
-}
-
-.stage1-form .form-group > div > div {
+.stage1-form .team-members > input {
   margin-top: 12px;
-}
-
-.stage1-form .form-group > div > div input {
   width: 100%;
-  margin-bottom: 10px;
   padding: 11px 16px;
   font-size: 14px;
   border: 1.5px solid #e2e8f0;
@@ -145,20 +111,17 @@
   font-family: inherit;
 }
 
-.stage1-form .form-group > div > div input:focus {
+.stage1-form .team-members > input:focus {
   border-color: #6366f1;
   background: #ffffff;
   box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
 }
 
-.stage1-form .form-group > div > div input::placeholder {
+.stage1-form .team-members > input::placeholder {
   color: #a0aec0;
   font-size: 13px;
 }
 
-.stage1-form .form-group > div > div:last-child input {
-  margin-bottom: 0;
-}
 
 /* Submit button row */
 .stage1-form .submit-row {
@@ -202,16 +165,6 @@
     border-radius: 12px;
   }
 
-  .stage1-form .form-group > div > button {
-    width: 100%;
-    margin-top: 8px;
-  }
-
-  .stage1-form .form-group > div > label {
-    display: block;
-    margin-bottom: 8px;
-  }
-
   .stage1-form .submit-row button {
     width: 100%;
     justify-content: center;
@@ -233,7 +186,7 @@
 }
 
 /* Optional: Add subtle animation for member inputs */
-.stage1-form .form-group > div > div {
+.stage1-form .team-members > input {
   animation: fadeSlideIn 0.2s ease-out;
 }
 
@@ -251,10 +204,7 @@
 /* Ensure consistent spacing for all inputs */
 .stage1-form .form-group input,
 .stage1-form .form-group select,
-.stage1-form .form-group > div > div input {
+.stage1-form .team-members > input {
   margin-bottom: 0;
 }
 
-.stage1-form .form-group > div > div:not(:last-child) {
-  margin-bottom: 0;
-}
