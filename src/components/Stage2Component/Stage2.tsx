@@ -10,9 +10,6 @@ const Stage2 = () => {
   const [sector, setSector] = useState("");
   const [otherSector, setOtherSector] = useState("");
   const [description, setDescription] = useState("");
-  const [inputOne, setInputOne] = useState("");
-  const [inputTwo, setInputTwo] = useState("");
-  const [inputThree, setInputThree] = useState("");
   const [loading, setLoading] = useState(false)
   const [dis, setDis] = useState(false)
   const navigate = useNavigate()
@@ -53,11 +50,6 @@ const Stage2 = () => {
       return;
     }
 
-    if (!inputOne.trim() || !inputTwo.trim() || !inputThree.trim()) {
-      toast.error("Please fill all three additional input boxes.");
-      return;
-    }
-
     let stage1: Record<string, unknown>;
     try {
       stage1 = JSON.parse(localStorage.getItem("stage1") || "{}");
@@ -77,9 +69,6 @@ const Stage2 = () => {
       track,
       sector: sector === "Other" ? otherSector : sector,
       description: description.trim(),
-      inputOne: inputOne.trim(),
-      inputTwo: inputTwo.trim(),
-      inputThree: inputThree.trim(),
     };
 
     const application = {
@@ -201,42 +190,6 @@ const Stage2 = () => {
           rows={7}
         />
         <span className="word-count">{description.trim().split(/\s+/).filter(Boolean).length} / 150 words</span>
-      </div>
-
-      <div className="stage2-group">
-        <label className="stage2-label" htmlFor="inputOne">Additional detail 1</label>
-        <input
-          id="inputOne"
-          className="stage2-input"
-          type="text"
-          value={inputOne}
-          onChange={(e) => setInputOne(e.target.value)}
-          placeholder="Enter your first extra detail"
-        />
-      </div>
-
-      <div className="stage2-group">
-        <label className="stage2-label" htmlFor="inputTwo">Additional detail 2</label>
-        <input
-          id="inputTwo"
-          className="stage2-input"
-          type="text"
-          value={inputTwo}
-          onChange={(e) => setInputTwo(e.target.value)}
-          placeholder="Enter your second extra detail"
-        />
-      </div>
-
-      <div className="stage2-group">
-        <label className="stage2-label" htmlFor="inputThree">Additional detail 3</label>
-        <input
-          id="inputThree"
-          className="stage2-input"
-          type="text"
-          value={inputThree}
-          onChange={(e) => setInputThree(e.target.value)}
-          placeholder="Enter your third extra detail"
-        />
       </div>
 
       <div className="stage2-buttons">
