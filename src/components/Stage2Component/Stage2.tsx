@@ -59,7 +59,14 @@ const Stage2 = () => {
       return;
     }
 
-    if (!stage1.idea || !stage1.leader || !stage1.email || !stage1.phone || !stage1.department || !Array.isArray(stage1.teams) || stage1.teams.length === 0) {
+    const idea = typeof stage1.idea === "string" ? stage1.idea.trim() : "";
+    const leader = typeof stage1.leader === "string" ? stage1.leader.trim() : "";
+    const email = typeof stage1.email === "string" ? stage1.email.trim() : "";
+    const phone = typeof stage1.phone === "string" ? stage1.phone.trim() : "";
+    const department = typeof stage1.department === "string" ? stage1.department.trim() : "";
+    const teams = Array.isArray(stage1.teams) ? stage1.teams.filter((t): t is string => typeof t === "string").map((t) => t.trim()) : [];
+
+    if (!idea || !leader || !email || !phone || !department || teams.length === 0) {
       toast.error("Please complete Stage 1 before submitting.");
       navigate("/");
       return;
@@ -72,7 +79,12 @@ const Stage2 = () => {
     };
 
     const application = {
-      ...stage1,
+      idea,
+      leader,
+      email,
+      phone,
+      department,
+      teams,
       ...stage2,
     };
 
@@ -99,10 +111,7 @@ const Stage2 = () => {
       }
 
       toast.success("Application submitted successfully!");
-      navigate("/submit");
-
       localStorage.removeItem("stage1");
-
       navigate("/submit");
 
     } catch (error) {
@@ -120,8 +129,13 @@ const Stage2 = () => {
 
   return (
     <div className="stage2-container">
-
-      <h2 className="stage-title">Startup Details</h2>
+      <div className="stage2-hero">
+        <div>
+          <p className="stage2-eyebrow">Step 2 of 2</p>
+          <h2 className="stage-title">Startup Details</h2>
+        </div>
+        <div className="stage2-badge">Secure submission</div>
+      </div>
 
       <div className="stage2-group">
         <label className="stage2-label">Track (Board)</label>
