@@ -12,9 +12,7 @@ const router = createBrowserRouter([
     {
         path:"/stage2",
         element:(
-            <PrivateRouter>
                 <Stage2/>
-            </PrivateRouter>
         )
     },
     {
