@@ -160,11 +160,6 @@ const Stage2 = () => {
     const department = typeof stage1.department === "string" ? stage1.department.trim() : "";
     const teams = Array.isArray(stage1.teams) ? stage1.teams.filter((t): t is string => typeof t === "string").map((t) => t.trim()) : [];
 
-    if (!idea || !leader || !email || !phone || !department || teams.length === 0) {
-      toast.error("Please complete Stage 1 before submitting.");
-      navigate("/");
-      return;
-    }
 
     const application: ApplicationPayload = {
       idea,
