@@ -181,6 +181,112 @@ const Stage2 = () => {
     setLoading(true);
     setDis(true);
 
+    // Parse the (possibly) unstructured description text and produce
+    // a mapping from existing fields -> array of original description strings.
+    const parseDescriptions = (text: string): Record<string, string[]> => {
+      const snippets = text
+        .split(/\n{2,}|\r\n{2,}/) // split on double newlines
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const mapping: Record<string, string[]> = {};
+      const push = (key: string, val: string) => {
+        if (!mapping[key]) mapping[key] = [];
+        mapping[key].push(val);
+      };
+
+      const trackKeywords = [
+        "Technology",
+        "Sustainability",
+        "Social",
+        "FinTech",
+        "HealthTech",
+        "EdTech",
+        "Consumer",
+        "AgriTech",
+        "Open Innovation",
+      ];
+
+      const sectorKeywords = [
+        "Healthcare",
+        "Education",
+        "Agriculture",
+        "E-commerce",
+        "Finance",
+        "Climate",
+        "Artificial Intelligence",
+        "Manufacturing",
+        "Transportation",
+        "Media",
+        "Food",
+        "Travel",
+      ];
+
+      const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i;
+      const phoneRegex = /(?:\+?\d[\d\s().-]{5,}\d)/;
+
+      for (const s of snippets) {
+        // preserve original snippet exactly
+        const original = s;
+
+        // strong signals first
+        if (emailRegex.test(s)) {
+          push("email", original);
+          continue;
+        }
+
+        if (phoneRegex.test(s)) {
+          push("phone", original);
+          continue;
+        }
+
+        // check for team lists (commas or lines of names)
+        if (/\bteam\b/i.test(s) || /,/.test(s) && s.split(",").length >= 2) {
+          push("teams", original);
+          continue;
+        }
+
+        // leader name heuristics (short phrase with capitalized words)
+        if (/^([A-Z][a-z]+\s?){1,3}$/.test(s)) {
+          push("leader", original);
+          continue;
+        }
+
+        // track keywords
+        if (trackKeywords.some((k) => new RegExp(k, "i").test(s))) {
+          push("track", original);
+          continue;
+        }
+
+        // sector keywords
+        if (sectorKeywords.some((k) => new RegExp(k, "i").test(s))) {
+          push("sector", original);
+          continue;
+        }
+
+        // short idea-like phrases
+        if (s.length < 80 && /\b(app|platform|service|product|solution|system)\b/i.test(s)) {
+          push("idea", original);
+          continue;
+        }
+
+        // default: consider it a description candidate
+        // but if we cannot confidently map, place under Unassigned
+        // We'll use a conservative approach: place into `description` if it contains problem/impact keywords
+        if (/\b(problem|solve|impact|market|users|customers|benefit|reduce|improve)\b/i.test(s)) {
+          push("description", original);
+          continue;
+        }
+
+        // fallback
+        push("Unassigned", original);
+      }
+
+      return mapping;
+    };
+
+    const parsed = parseDescriptions(application.description);
+
     try {
       const pdfBlob = createApplicationPdf(application);
       const formData = new FormData();
@@ -193,6 +299,15 @@ const Stage2 = () => {
       formData.append("track", application.track);
       formData.append("sector", application.sector);
       formData.append("description", application.description);
+      // Attach parsed descriptions JSON as an optional field. We do not
+      // change existing field names; this is an additional optional payload
+      // that the backend will ingest if present.
+      try {
+        formData.append("parsedDescriptions", JSON.stringify(parsed));
+      } catch (e) {
+        console.error("failed to attach parsedDescriptions", e);
+      }
+
       application.teams.forEach((team) => formData.append("teams", team));
       formData.append("applicationPDF", new File([pdfBlob], "startup_application.pdf", { type: "application/pdf" }));
 
@@ -203,13 +318,14 @@ const Stage2 = () => {
 
       const data = await res.json().catch(() => ({}));
 
-      if (!res.ok) {
-        toast.error(data.message || `Server error ${res.status}`);
+      if (res.ok && data && data.success === true) {
+        toast.success("Application submitted successfully and saved to Google Drive.");
+        navigate("/submit");
+      } else {
+        const msg = (data && data.message) || `Application submission failed${res.status ? ` (status ${res.status})` : ""}`;
+        toast.error(msg);
         return;
       }
-
-      toast.success("Application submitted successfully!");
-      navigate("/submit");
     } catch (error) {
       console.error("SUBMIT ERROR:", error);
       toast.error("Unable to connect to server. Please try again.");
@@ -300,7 +416,7 @@ const Stage2 = () => {
 
       <div className="stage2-buttons">
         <button className="back-btn" onClick={() => navigate("/")}>Back</button>
-        <button disabled={dis} className="next-btn" onClick={handleSumbit}>{loading ? "Waiting for progress" : "Submit"}</button>
+        <button disabled={dis} className="next-btn" onClick={handleSumbit}>{loading ? "Submitting..." : "Submit"}</button>
       </div>
 
     </div>
