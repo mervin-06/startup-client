@@ -19,11 +19,7 @@ const router = createBrowserRouter([
     },
     {
         path:"/submit",
-        element:(
-            <PrivateRouter>
-                <SubmittedSuccess/>
-            </PrivateRouter>
-        )
+        element:(<SubmittedSuccess/>)
     }
 ])
 
