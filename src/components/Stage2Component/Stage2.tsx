@@ -66,14 +66,37 @@ const createApplicationPdf = (application: ApplicationPayload) => {
   pdf.setFont("helvetica", "normal");
   textSection("Track:", application.track, currentY);
   currentY += 10;
+
   textSection("Sector:", application.sector, currentY);
   currentY += 10;
-  textSection("Description:", application.description, currentY);
-  currentY += 10;
 
-  const descriptionLines = pdf.splitTextToSize(application.description, 180);
-  pdf.text(descriptionLines, 15, currentY);
-  currentY += descriptionLines.length * 6 + 6;
+  // Description
+  pdf.setFontSize(12);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Description:", 15, currentY);
+
+  currentY += 7;
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(11);
+
+  const descriptionLines = pdf.splitTextToSize(
+    application.description,
+    180
+  );
+
+  descriptionLines.forEach((line: string) => {
+    // Create a new page if there isn't enough space
+    if (currentY > 270) {
+      pdf.addPage();
+      currentY = 20;
+    }
+
+    pdf.text(line, 15, currentY);
+    currentY += 6;
+  });
+
+  currentY += 8;
 
   pdf.setFontSize(14);
   pdf.setFont("helvetica", "bold");
@@ -84,10 +107,14 @@ const createApplicationPdf = (application: ApplicationPayload) => {
   pdf.setFont("helvetica", "normal");
 
   application.teams.forEach((member, index) => {
+    if (currentY > 270) {
+      pdf.addPage();
+      currentY = 20;
+    }
+
     pdf.text(`${index + 1}. ${member}`, 18, currentY);
     currentY += 8;
   });
-
   if (currentY > 270) {
     pdf.addPage();
     currentY = 20;
