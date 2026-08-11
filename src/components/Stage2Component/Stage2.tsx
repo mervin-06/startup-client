@@ -208,7 +208,7 @@ const Stage2 = () => {
         return;
       }
 
-      toast.success("Application submitted and email sent successfully!");
+      toast.success("Application submitted successfully!");
       localStorage.removeItem("stage1");
       navigate("/submit");
     } catch (error) {
