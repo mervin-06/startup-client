@@ -209,7 +209,6 @@ const Stage2 = () => {
       }
 
       toast.success("Application submitted successfully!");
-      localStorage.removeItem("stage1");
       navigate("/submit");
     } catch (error) {
       console.error("SUBMIT ERROR:", error);
